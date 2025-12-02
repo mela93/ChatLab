@@ -224,6 +224,9 @@ export const useChatStore = defineStore(
       isSidebarCollapsed.value = !isSidebarCollapsed.value
     }
 
+    // 设置弹窗状态
+    const showSettingModal = ref(false)
+
     // ==================== 自定义关键词模板 ====================
     const customKeywordTemplates = ref<KeywordTemplate[]>([])
 
@@ -265,6 +268,7 @@ export const useChatStore = defineStore(
       importProgress,
       isInitialized,
       isSidebarCollapsed,
+      showSettingModal,
       customKeywordTemplates,
       deletedPresetTemplateIds,
       // Computed

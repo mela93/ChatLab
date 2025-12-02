@@ -309,6 +309,7 @@ function getContextMenuItems(session: AnalysisSession) {
           :class="[isCollapsed ? 'flex w-12 items-center justify-center px-0' : 'justify-start pl-4']"
           color="gray"
           variant="ghost"
+          @click="chatStore.showSettingModal = true"
         >
           <UIcon name="i-heroicons-cog-6-tooth" class="h-5 w-5 shrink-0" :class="[isCollapsed ? '' : 'mr-2']" />
           <span v-if="!isCollapsed" class="truncate">设置和帮助</span>
@@ -330,4 +331,3 @@ function getContextMenuItems(session: AnalysisSession) {
     </div>
   </div>
 </template>
-```

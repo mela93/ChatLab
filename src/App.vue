@@ -4,6 +4,7 @@ import { useChatStore } from '@/stores/chat'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import Sidebar from '@/components/common/Sidebar.vue'
+import SettingModal from '@/components/common/SettingModal.vue'
 
 const chatStore = useChatStore()
 const { isInitialized } = storeToRefs(chatStore)
@@ -41,6 +42,7 @@ onMounted(async () => {
         </main>
       </template>
     </div>
+    <SettingModal v-model:open="chatStore.showSettingModal" />
   </UApp>
 </template>
 
