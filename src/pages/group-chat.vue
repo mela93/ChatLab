@@ -39,7 +39,7 @@ const tabs = [
   { id: 'quotes', label: '群语录', icon: 'i-heroicons-chat-bubble-bottom-center-text' },
   { id: 'relationships', label: '群关系', icon: 'i-heroicons-heart' },
   { id: 'timeline', label: '群趋势', icon: 'i-heroicons-chart-bar' },
-  { id: 'ai', label: 'AI', icon: 'i-heroicons-sparkles' },
+  { id: 'ai', label: 'AI实验室', icon: 'i-heroicons-sparkles' },
 ]
 
 const activeTab = ref((route.query.tab as string) || 'overview')

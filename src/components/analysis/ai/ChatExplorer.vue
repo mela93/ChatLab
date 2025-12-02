@@ -71,9 +71,9 @@ function generateWelcomeMessage() {
   return `👋 你好！我是 AI 助手，可以帮你探索「${props.sessionName}」的聊天记录。
 
 你可以这样问我：
-- "帮我找一下群里讨论买房的记录"
-- "大家最近聊了什么有趣的话题"
-- "谁是群里最活跃的人"
+- 大家最近聊了什么有趣的话题
+- 谁是群里最活跃的人
+- 帮我找一下群里讨论买房的记录
 
 ${configHint}`
 }
@@ -152,9 +152,9 @@ watch(
 </script>
 
 <template>
-  <div class="relative flex h-full overflow-hidden px-4">
+  <div class="flex h-full overflow-hidden">
     <!-- 左侧：对话记录列表 -->
-    <div class="absolute left-0 top-0 h-full w-64 p-4">
+    <div class="w-64 shrink-0 border-r border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/50">
       <ConversationList
         ref="conversationListRef"
         :session-id="sessionId"
@@ -167,45 +167,11 @@ watch(
     </div>
 
     <!-- 中间：对话区域 -->
-    <div class="flex h-full flex-1 justify-center pl-64 pr-80">
-      <div
-        class="flex min-w-0 flex-1 max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-900"
-      >
-        <!-- 对话区域头部 -->
-        <div class="shrink-0 flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
-          <div class="flex items-center gap-2">
-            <UIcon name="i-heroicons-sparkles" class="h-5 w-5 text-violet-500" />
-            <span class="font-medium text-gray-900 dark:text-white">AI 对话探索</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <!-- 配置状态指示 -->
-            <div
-              v-if="!isCheckingConfig"
-              class="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
-              :class="[
-                hasLLMConfig
-                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                  : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-              ]"
-            >
-              <span class="h-2 w-2 rounded-full" :class="[hasLLMConfig ? 'bg-green-500' : 'bg-amber-500']" />
-              {{ hasLLMConfig ? '已配置' : '未配置' }}
-            </div>
-            <UButton
-              icon="i-heroicons-cog-6-tooth"
-              color="gray"
-              variant="ghost"
-              size="sm"
-              @click="showConfigModal = true"
-            >
-              配置
-            </UButton>
-          </div>
-        </div>
-
+    <div class="flex h-full flex-1">
+      <div class="flex min-w-[480px] flex-1 flex-col overflow-hidden">
         <!-- 消息列表 -->
         <div ref="messagesContainer" class="min-h-0 flex-1 overflow-y-auto p-4">
-          <div class="mx-auto space-y-4">
+          <div class="mx-auto max-w-3xl space-y-4">
             <ChatMessage
               v-for="msg in messages"
               :key="msg.id"
@@ -238,18 +204,53 @@ watch(
           </div>
         </div>
 
-        <!-- 输入框 -->
-        <ChatInput
-          :disabled="isAIThinking"
-          :status="isAIThinking ? (isLoadingSource ? 'submitted' : 'streaming') : 'ready'"
-          @send="handleSend"
-        />
+        <!-- 输入框区域 -->
+        <div class="p-4 pt-0">
+          <div class="mx-auto max-w-3xl">
+            <ChatInput
+              :disabled="isAIThinking"
+              :status="isAIThinking ? (isLoadingSource ? 'submitted' : 'streaming') : 'ready'"
+              @send="handleSend"
+            />
+
+            <!-- 底部状态栏 -->
+            <div class="mt-2 flex items-center justify-between px-1">
+              <div class="flex items-center gap-2 text-xs text-gray-400">
+                <UIcon name="i-heroicons-sparkles" class="h-3.5 w-3.5" />
+                <span>AI 对话探索</span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <!-- 配置状态指示 -->
+                <div
+                  v-if="!isCheckingConfig"
+                  class="flex items-center gap-1.5 text-xs transition-colors"
+                  :class="[hasLLMConfig ? 'text-gray-400' : 'text-amber-500 font-medium']"
+                >
+                  <span class="h-1.5 w-1.5 rounded-full" :class="[hasLLMConfig ? 'bg-green-500' : 'bg-amber-500']" />
+                  {{ hasLLMConfig ? '服务已连接' : '未配置 AI 服务' }}
+                </div>
+
+                <button
+                  class="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                  @click="showConfigModal = true"
+                >
+                  <UIcon name="i-heroicons-cog-6-tooth" class="h-3.5 w-3.5" />
+                  <span>配置</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 右侧：数据源面板（限制高度） -->
+    <!-- 右侧：数据源面板 -->
     <Transition name="slide-fade">
-      <div v-if="sourceMessages.length > 0 && !isSourcePanelCollapsed" class="absolute right-0 top-0 h-full w-80 p-4">
+      <div
+        v-if="sourceMessages.length > 0 && !isSourcePanelCollapsed"
+        class="w-80 shrink-0 border-l border-gray-200 bg-gray-50/50 p-4 dark:border-gray-800 dark:bg-gray-900/50"
+      >
         <DataSourcePanel
           :messages="sourceMessages"
           :keywords="currentKeywords"

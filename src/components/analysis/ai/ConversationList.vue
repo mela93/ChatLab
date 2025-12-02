@@ -113,38 +113,46 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex h-full w-64 flex-col rounded-xl bg-white shadow-sm dark:bg-gray-900">
+  <div class="flex h-full w-64 flex-col">
     <!-- 头部 -->
-    <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
-      <div class="flex items-center gap-2">
-        <UIcon name="i-heroicons-chat-bubble-left-right" class="h-5 w-5 text-gray-500" />
-        <span class="font-medium text-gray-900 dark:text-white">对话记录</span>
-      </div>
-      <UButton icon="i-heroicons-plus" color="primary" variant="soft" size="xs" @click="emit('create')">新对话</UButton>
+    <div class="flex items-center justify-between px-2 py-4">
+      <span class="text-xs font-semibold tracking-wider text-gray-400 uppercase">History</span>
+      <UButton
+        icon="i-heroicons-plus"
+        color="gray"
+        variant="ghost"
+        size="xs"
+        class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
+        @click="emit('create')"
+      />
     </div>
 
     <!-- 对话列表 -->
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto px-2">
       <!-- 加载中 -->
       <div v-if="isLoading" class="flex items-center justify-center py-8">
-        <UIcon name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-gray-400" />
+        <UIcon name="i-heroicons-arrow-path" class="h-5 w-5 animate-spin text-gray-400" />
       </div>
 
       <!-- 空状态 -->
-      <div v-else-if="conversations.length === 0" class="flex flex-col items-center justify-center py-8 text-center">
-        <UIcon name="i-heroicons-chat-bubble-left-ellipsis" class="h-10 w-10 text-gray-300 dark:text-gray-600" />
-        <p class="mt-2 text-sm text-gray-500">暂无对话</p>
-        <p class="text-xs text-gray-400">点击"新对话"开始</p>
+      <div v-else-if="conversations.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800">
+          <UIcon name="i-heroicons-chat-bubble-left" class="h-6 w-6 text-gray-300 dark:text-gray-600" />
+        </div>
+        <p class="mt-3 text-xs text-gray-400">暂无历史记录</p>
+        <UButton class="mt-2" size="xs" variant="link" color="primary" @click="emit('create')">开始新对话</UButton>
       </div>
 
       <!-- 对话列表 -->
-      <div v-else class="p-2 space-y-1">
+      <div v-else class="space-y-0.5">
         <div
           v-for="conv in conversations"
           :key="conv.id"
-          class="group relative rounded-lg px-3 py-2.5 transition-colors cursor-pointer"
+          class="group relative rounded-lg px-3 py-2.5 transition-all cursor-pointer"
           :class="[
-            activeId === conv.id ? 'bg-violet-50 dark:bg-violet-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50',
+            activeId === conv.id
+              ? 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white'
+              : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50',
           ]"
           @click="emit('select', conv.id)"
         >
@@ -152,8 +160,9 @@ defineExpose({
           <template v-if="editingId === conv.id">
             <input
               v-model="editingTitle"
-              class="w-full rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
+              class="w-full rounded border-none bg-white px-2 py-1 text-sm shadow-sm ring-1 ring-gray-200 focus:ring-2 focus:ring-primary-500 dark:bg-gray-900 dark:ring-gray-700"
               placeholder="输入标题..."
+              autoFocus
               @blur="saveTitle(conv.id)"
               @keyup.enter="saveTitle(conv.id)"
               @click.stop
@@ -164,22 +173,18 @@ defineExpose({
           <template v-else>
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 flex-1">
-                <p
-                  class="truncate text-sm font-medium"
-                  :class="[
-                    activeId === conv.id ? 'text-violet-700 dark:text-violet-400' : 'text-gray-900 dark:text-white',
-                  ]"
-                >
+                <p class="truncate text-sm font-medium">
                   {{ getTitle(conv) }}
                 </p>
-                <p class="mt-0.5 text-xs text-gray-400">
+                <p class="mt-1 text-[10px] text-gray-400 opacity-80">
                   {{ formatTime(conv.updatedAt) }}
                 </p>
               </div>
 
               <!-- 操作按钮 -->
               <div
-                class="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
+                class="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                :class="{ 'opacity-100': activeId === conv.id }"
                 @click.stop
               >
                 <UButton
@@ -187,13 +192,15 @@ defineExpose({
                   color="gray"
                   variant="ghost"
                   size="2xs"
+                  class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                   @click="startEditing(conv)"
                 />
                 <UButton
                   icon="i-heroicons-trash"
-                  color="red"
+                  color="gray"
                   variant="ghost"
                   size="2xs"
+                  class="text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                   @click="handleDelete(conv.id)"
                 />
               </div>

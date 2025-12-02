@@ -13,8 +13,9 @@ defineProps<{
 // 子 Tab 配置
 const subTabs = [
   { id: 'chat-explorer', label: '对话式探索', icon: 'i-heroicons-chat-bubble-left-ellipsis' },
-  { id: 'lab', label: '实验室', icon: 'i-heroicons-beaker' },
-  { id: 'manual', label: '手动分析', icon: 'i-heroicons-adjustments-horizontal' },
+  { id: 'manual', label: '筛选分析', icon: 'i-heroicons-adjustments-horizontal' },
+  { id: 'sql', label: 'AI SQL', icon: 'i-heroicons-beaker' },
+  { id: 'mbti', label: 'MBTI检测仪', icon: 'i-heroicons-heart' },
 ]
 
 const activeSubTab = ref('chat-explorer')
@@ -50,14 +51,38 @@ const activeSubTab = ref('chat-explorer')
           </div>
         </div>
 
-        <!-- 手动分析 - 暂未实现 -->
+        <!-- 筛选分析 - 暂未实现 -->
         <div v-else-if="activeSubTab === 'manual'" class="flex h-full items-center justify-center p-6">
           <div
             class="flex h-full w-full items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/50"
           >
             <div class="text-center">
               <UIcon name="i-heroicons-adjustments-horizontal" class="mx-auto h-12 w-12 text-gray-400" />
-              <p class="mt-3 text-sm font-medium text-gray-600 dark:text-gray-400">手动分析功能开发中</p>
+              <p class="mt-3 text-sm font-medium text-gray-600 dark:text-gray-400">筛选分析功能开发中</p>
+              <p class="mt-1 text-xs text-gray-400">敬请期待...</p>
+            </div>
+          </div>
+        </div>
+        <!-- AI SQL -->
+        <div v-else-if="activeSubTab === 'sql'" class="flex h-full items-center justify-center p-6">
+          <div
+            class="flex h-full w-full items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/50"
+          >
+            <div class="text-center">
+              <UIcon name="i-heroicons-beaker" class="mx-auto h-12 w-12 text-gray-400" />
+              <p class="mt-3 text-sm font-medium text-gray-600 dark:text-gray-400">开发中</p>
+              <p class="mt-1 text-xs text-gray-400">敬请期待...</p>
+            </div>
+          </div>
+        </div>
+        <!-- MBTI检测仪 -->
+        <div v-else-if="activeSubTab === 'mbti'" class="flex h-full items-center justify-center p-6">
+          <div
+            class="flex h-full w-full items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/50"
+          >
+            <div class="text-center">
+              <UIcon name="i-heroicons-beaker" class="mx-auto h-12 w-12 text-gray-400" />
+              <p class="mt-3 text-sm font-medium text-gray-600 dark:text-gray-400">开发中</p>
               <p class="mt-1 text-xs text-gray-400">敬请期待...</p>
             </div>
           </div>
