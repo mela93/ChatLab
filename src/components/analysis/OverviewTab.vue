@@ -225,7 +225,7 @@ const weekdayVsWeekend = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 p-6">
     <!-- 群聊身份卡 -->
     <div class="rounded-2xl bg-linear-to-br from-pink-400 via-pink-500 to-pink-600 p-6 text-white shadow-lg">
       <div class="flex items-start justify-between">

@@ -150,7 +150,7 @@ watch(
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 p-6">
     <!-- 标题 -->
     <div>
       <h2 class="text-xl font-bold text-gray-900 dark:text-white">时间轴分析</h2>

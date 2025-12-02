@@ -218,7 +218,7 @@ watch(
             <!-- AI 思考中指示器 -->
             <div v-if="isAIThinking && !messages[messages.length - 1]?.isStreaming" class="flex items-start gap-3">
               <div
-                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600"
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-violet-500 to-purple-600"
               >
                 <UIcon name="i-heroicons-sparkles" class="h-4 w-4 text-white" />
               </div>

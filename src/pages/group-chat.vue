@@ -301,8 +301,7 @@ onMounted(() => {
           <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-pink-500" />
         </div>
 
-        <!-- Content with padding -->
-        <div class="p-6">
+        <div class="h-full">
           <Transition name="tab-slide" mode="out-in">
             <OverviewTab
               v-if="activeTab === 'overview'"
