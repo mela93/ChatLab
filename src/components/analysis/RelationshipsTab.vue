@@ -269,7 +269,7 @@ watch(
           </div>
 
           <div class="mt-4 flex justify-end">
-            <UButton color="gray" variant="soft" @click="showMemberDetailModal = false">关闭</UButton>
+            <UButton variant="soft" @click="showMemberDetailModal = false">关闭</UButton>
           </div>
         </div>
       </template>

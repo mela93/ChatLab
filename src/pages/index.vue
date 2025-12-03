@@ -134,7 +134,7 @@ function getProgressDetail(): string {
     </div>
 
     <!-- Content Container -->
-    <div class="relative h-full w-full overflow-y-auto z-10">
+    <div class="relative h-full w-full overflow-y-auto">
       <div class="flex min-h-full w-full flex-col items-center justify-center px-4 py-12">
         <!-- Hero Section -->
         <div class="xl:mb-16 mb-8 text-center">
@@ -157,7 +157,7 @@ function getProgressDetail(): string {
             :key="feature.title"
             class="group relative overflow-hidden rounded-3xl border border-transparent p-4 transition-all duration-500"
           >
-            <div class="relative z-10">
+            <div class="relative">
               <div class="mb-3 flex items-center">
                 <div
                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"

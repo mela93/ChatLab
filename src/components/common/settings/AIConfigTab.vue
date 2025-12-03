@@ -135,6 +135,14 @@ onMounted(() => {
 
   <!-- 配置列表视图 -->
   <div v-else class="space-y-4">
+    <UAlert color="warning" variant="outline" icon="i-lucide-terminal" class="p-2">
+      <template #title>
+        <p>
+          强烈建议配置本地模型，分析聊天记录更加安全，个人实测3B小模型也能满足分析需求，而且可以无限量分析聊天记录，参考教程
+          <a href="https://baidu.com" class="text-pink-500" target="_blank">配置Parallax本地模型</a>
+        </p>
+      </template>
+    </UAlert>
     <!-- 配置列表 -->
     <div v-if="configs.length > 0" class="space-y-2">
       <div
@@ -207,37 +215,11 @@ onMounted(() => {
     </div>
 
     <!-- 添加按钮 -->
-    <UButton block color="gray" variant="soft" :disabled="isMaxConfigs" class="mt-4" @click="openAddModal">
-      <UIcon name="i-heroicons-plus" class="mr-2 h-4 w-4" />
-      {{ isMaxConfigs ? '已达最大配置数量（10个）' : '添加新配置' }}
-    </UButton>
-
-    <!-- 获取 API Key 链接（仅在没有配置时显示） -->
-    <div v-if="configs.length === 0" class="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
-      <p class="text-sm text-gray-600 dark:text-gray-400">还没有 API Key？前往获取：</p>
-      <div class="mt-2 flex flex-wrap gap-3">
-        <a
-          href="https://platform.deepseek.com/"
-          target="_blank"
-          class="text-sm text-violet-600 hover:underline dark:text-violet-400"
-        >
-          DeepSeek →
-        </a>
-        <a
-          href="https://dashscope.console.aliyun.com/"
-          target="_blank"
-          class="text-sm text-violet-600 hover:underline dark:text-violet-400"
-        >
-          通义千问 →
-        </a>
-        <a
-          href="https://ollama.com/"
-          target="_blank"
-          class="text-sm text-violet-600 hover:underline dark:text-violet-400"
-        >
-          Ollama (本地) →
-        </a>
-      </div>
+    <div class="flex justify-center">
+      <UButton variant="soft" :disabled="isMaxConfigs" class="mt-4" @click="openAddModal">
+        <UIcon name="i-heroicons-plus" class="mr-2 h-4 w-4" />
+        {{ isMaxConfigs ? '已达最大配置数量（10个）' : '添加新配置' }}
+      </UButton>
     </div>
   </div>
 

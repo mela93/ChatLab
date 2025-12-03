@@ -446,7 +446,7 @@ watch(
                   </div>
                 </div>
                 <div class="mt-4 flex justify-end gap-2">
-                  <UButton color="gray" variant="soft" @click="showTemplateModal = false">取消</UButton>
+                  <UButton variant="soft" @click="showTemplateModal = false">取消</UButton>
                   <UButton
                     color="primary"
                     :disabled="!templateName.trim() || templateKeywords.length === 0"
@@ -471,10 +471,10 @@ watch(
             {{ keyword }}
             <span class="ml-0.5 hover:text-red-500">×</span>
           </UBadge>
-          <UInput v-model="newKeyword" placeholder="输入后回车添加" class="w-32" @keydown.enter.prevent="addKeyword" />
+          <UInput v-model="newKeyword" placeholder="输入并搜索" class="w-32" @keydown.enter.prevent="addKeyword" />
           <button
             v-if="currentKeywords.length > 0"
-            class="text-xs text-gray-400 hover:text-red-500"
+            class="text-sm text-pink-500 hover:text-red-500"
             @click="clearAllKeywords"
           >
             清空

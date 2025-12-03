@@ -446,7 +446,7 @@ const file2Name = computed(() => files.value[1]?.name || '文件 2')
               <label class="mb-1 block text-xs text-gray-500 dark:text-gray-400">输出目录（可选）</label>
               <div class="flex gap-2">
                 <UInput v-model="outputDir" placeholder="默认保存到文档/ChatLab/merged/" class="flex-1" readonly />
-                <UButton icon="i-heroicons-folder" color="gray" variant="soft" @click="selectOutputDir">选择</UButton>
+                <UButton icon="i-heroicons-folder" variant="soft" @click="selectOutputDir">选择</UButton>
               </div>
             </div>
           </div>
@@ -501,13 +501,9 @@ const file2Name = computed(() => files.value[1]?.name || '文件 2')
           class="flex flex-wrap items-center gap-2 border-b border-gray-200 bg-gray-50 px-5 py-3 dark:border-gray-800 dark:bg-gray-800/50"
         >
           <span class="text-sm text-gray-600 dark:text-gray-400">一键选择：</span>
-          <UButton size="xs" color="gray" variant="soft" @click="batchSelectAll('keep1')">
-            全部保留「{{ file1Name }}」
-          </UButton>
-          <UButton size="xs" color="gray" variant="soft" @click="batchSelectAll('keep2')">
-            全部保留「{{ file2Name }}」
-          </UButton>
-          <UButton size="xs" color="gray" variant="soft" @click="batchSelectAll('keepBoth')">全部保留两者</UButton>
+          <UButton size="xs" variant="soft" @click="batchSelectAll('keep1')">全部保留「{{ file1Name }}」</UButton>
+          <UButton size="xs" variant="soft" @click="batchSelectAll('keep2')">全部保留「{{ file2Name }}」</UButton>
+          <UButton size="xs" variant="soft" @click="batchSelectAll('keepBoth')">全部保留两者</UButton>
         </div>
 
         <!-- 冲突列表 -->
@@ -629,7 +625,7 @@ const file2Name = computed(() => files.value[1]?.name || '文件 2')
 
         <!-- 底部操作 -->
         <div class="flex items-center justify-between border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-          <UButton color="gray" variant="ghost" @click="currentStep = 'select'">
+          <UButton variant="ghost" @click="currentStep = 'select'">
             <UIcon name="i-heroicons-arrow-left" class="mr-1 h-4 w-4" />
             返回
           </UButton>
@@ -660,7 +656,7 @@ const file2Name = computed(() => files.value[1]?.name || '文件 2')
             <UIcon name="i-heroicons-folder-open" class="mr-1 h-4 w-4" />
             打开文件夹
           </UButton>
-          <UButton color="gray" @click="reset">继续合并</UButton>
+          <UButton @click="reset">继续合并</UButton>
         </div>
       </div>
     </template>
@@ -679,7 +675,7 @@ const file2Name = computed(() => files.value[1]?.name || '文件 2')
             </div>
           </div>
           <div class="mt-6 flex justify-end">
-            <UButton color="gray" @click="showErrorModal = false">我知道了</UButton>
+            <UButton @click="showErrorModal = false">我知道了</UButton>
           </div>
         </div>
       </template>

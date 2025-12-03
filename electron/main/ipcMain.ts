@@ -97,7 +97,7 @@ const mainIpcMain = (win: BrowserWindow) => {
     if (data.resize) {
       win.setResizable(true)
     } else {
-      win.setSize(1180, 720)
+      win.setSize(1180, 752)
       win.setResizable(false)
     }
   })

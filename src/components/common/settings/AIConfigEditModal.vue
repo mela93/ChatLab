@@ -407,7 +407,7 @@ watch(
                 >
                   本地服务
                 </p>
-                <p class="mt-0.5 text-[10px] text-gray-500">Ollama 等</p>
+                <p class="mt-0.5 text-[10px] text-gray-500">Ollama、Parallax 等</p>
               </div>
             </button>
 
@@ -453,6 +453,7 @@ watch(
             <UInput
               v-model="formData.name"
               :placeholder="configType === 'preset' ? '留空将使用服务商名称' : '留空将使用 API 端点地址'"
+              class="w-full"
             />
           </div>
 
@@ -524,23 +525,16 @@ watch(
               <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">API 端点</label>
               <div class="flex gap-2">
                 <UInput v-model="formData.baseUrl" placeholder="http://localhost:11434/v1" class="flex-1" />
-                <UButton
-                  :loading="isValidating"
-                  :disabled="!formData.baseUrl"
-                  color="gray"
-                  variant="soft"
-                  @click="validateKey"
-                >
+                <UButton :loading="isValidating" :disabled="!formData.baseUrl" variant="soft" @click="validateKey">
                   测试
                 </UButton>
               </div>
-              <p class="mt-1 text-xs text-gray-500">Ollama 默认：http://localhost:11434/v1</p>
             </div>
 
             <!-- 模型名称 -->
             <div>
               <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">模型名称</label>
-              <UInput v-model="formData.model" placeholder="如 llama3.2、qwen2.5、deepseek-r1" />
+              <UInput v-model="formData.model" placeholder="如 qwen3、deepseek-r1" />
               <p class="mt-1 text-xs text-gray-500">输入本地部署的模型名称</p>
             </div>
 
@@ -659,7 +653,7 @@ watch(
 
         <!-- 底部按钮 -->
         <div class="mt-6 flex justify-end gap-2">
-          <UButton color="gray" variant="soft" @click="closeModal">取消</UButton>
+          <UButton variant="soft" @click="closeModal">取消</UButton>
           <UButton color="primary" :disabled="!canSave" :loading="isSaving" @click="saveConfig">
             {{ mode === 'add' ? '添加' : '保存' }}
           </UButton>

@@ -54,20 +54,12 @@ function highlightKeywords(text: string): string {
     <!-- 展开状态 -->
     <template v-else>
       <!-- 头部 -->
-      <div
-        class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800"
-      >
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
         <div class="flex items-center gap-2">
           <UIcon name="i-heroicons-document-magnifying-glass" class="h-5 w-5 text-gray-500" />
           <span class="font-medium text-gray-900 dark:text-white">数据源</span>
         </div>
-        <UButton
-          icon="i-heroicons-chevron-right"
-          color="gray"
-          variant="ghost"
-          size="xs"
-          @click="emit('toggle')"
-        />
+        <UButton icon="i-heroicons-chevron-right" color="gray" variant="ghost" size="xs" @click="emit('toggle')" />
       </div>
 
       <!-- 当前关键词 -->
@@ -92,10 +84,7 @@ function highlightKeywords(text: string): string {
         </div>
 
         <!-- 空状态 -->
-        <div
-          v-else-if="messages.length === 0"
-          class="flex flex-col items-center justify-center py-8 text-center"
-        >
+        <div v-else-if="messages.length === 0" class="flex flex-col items-center justify-center py-8 text-center">
           <UIcon name="i-heroicons-inbox" class="h-10 w-10 text-gray-300 dark:text-gray-600" />
           <p class="mt-2 text-sm text-gray-500">暂无数据</p>
           <p class="text-xs text-gray-400">发送问题后，相关记录会显示在这里</p>
@@ -114,33 +103,22 @@ function highlightKeywords(text: string): string {
               </span>
               <span class="text-xs text-gray-400">{{ formatTime(msg.timestamp) }}</span>
             </div>
-            <p
-              class="line-clamp-3 text-sm text-gray-600 dark:text-gray-400"
-              v-html="highlightKeywords(msg.content)"
-            />
+            <p class="line-clamp-3 text-sm text-gray-600 dark:text-gray-400" v-html="highlightKeywords(msg.content)" />
           </div>
         </div>
       </div>
 
       <!-- 底部统计 & 加载更多 -->
-      <div
-        v-if="messages.length > 0"
-        class="border-t border-gray-200 px-4 py-2 dark:border-gray-800"
-      >
+      <div v-if="messages.length > 0" class="border-t border-gray-200 px-4 py-2 dark:border-gray-800">
         <div class="flex items-center justify-between">
           <span class="text-xs text-gray-500">共 {{ messages.length }} 条记录</span>
-          <UButton size="xs" color="gray" variant="ghost" @click="emit('loadMore')">
-            加载更多
-          </UButton>
+          <UButton size="xs" variant="ghost" @click="emit('loadMore')">加载更多</UButton>
         </div>
       </div>
     </template>
 
     <!-- 半透明数据流背景效果 -->
-    <div
-      v-if="!isCollapsed"
-      class="pointer-events-none absolute inset-0 overflow-hidden rounded-xl opacity-[0.03]"
-    >
+    <div v-if="!isCollapsed" class="pointer-events-none absolute inset-0 overflow-hidden rounded-xl opacity-[0.03]">
       <div class="data-flow-bg absolute inset-0" />
     </div>
   </div>
@@ -154,13 +132,7 @@ function highlightKeywords(text: string): string {
 
 /* 数据流背景动画 */
 .data-flow-bg {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 20px,
-    currentColor 20px,
-    currentColor 21px
-  );
+  background: repeating-linear-gradient(0deg, transparent, transparent 20px, currentColor 20px, currentColor 21px);
   animation: dataFlow 20s linear infinite;
 }
 
@@ -173,4 +145,3 @@ function highlightKeywords(text: string): string {
   }
 }
 </style>
-

@@ -258,14 +258,6 @@ onMounted(() => {
               </p>
             </div>
           </div>
-
-          <!-- Year Filter & Actions -->
-          <div class="flex items-center gap-3">
-            <!-- Actions -->
-            <UButton icon="i-heroicons-arrow-down-tray" color="gray" variant="ghost" size="sm" disabled>
-              生成报告
-            </UButton>
-          </div>
         </div>
 
         <!-- Tabs -->

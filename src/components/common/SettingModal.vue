@@ -55,7 +55,7 @@ watch(
         <!-- Header -->
         <div class="mb-4 flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">全局设置</h2>
-          <UButton icon="i-heroicons-x-mark" color="gray" variant="ghost" size="sm" @click="closeModal" />
+          <UButton icon="i-heroicons-x-mark" variant="ghost" size="sm" @click="closeModal" />
         </div>
 
         <!-- Tab 导航 -->
@@ -104,7 +104,7 @@ watch(
                     <p class="text-sm font-medium text-gray-900 dark:text-white">深色模式</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">跟随系统自动切换</p>
                   </div>
-                  <UBadge color="gray" variant="soft">自动</UBadge>
+                  <UBadge variant="soft">自动</UBadge>
                 </div>
               </div>
             </div>

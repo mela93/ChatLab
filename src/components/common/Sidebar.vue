@@ -256,7 +256,7 @@ function getContextMenuItems(session: AnalysisSession) {
             @keydown.enter="handleRename"
           />
           <div class="flex justify-end gap-2">
-            <UButton color="gray" variant="soft" @click="closeRenameModal">取消</UButton>
+            <UButton variant="soft" @click="closeRenameModal">取消</UButton>
             <UButton color="primary" :disabled="!newName.trim()" @click="handleRename">确定</UButton>
           </div>
         </div>
@@ -274,7 +274,7 @@ function getContextMenuItems(session: AnalysisSession) {
             吗？此操作无法撤销。
           </p>
           <div class="flex justify-end gap-2">
-            <UButton color="gray" variant="soft" @click="closeDeleteModal">取消</UButton>
+            <UButton variant="soft" @click="closeDeleteModal">取消</UButton>
             <UButton color="error" @click="confirmDelete">删除</UButton>
           </div>
         </div>
@@ -283,8 +283,8 @@ function getContextMenuItems(session: AnalysisSession) {
 
     <!-- Footer -->
     <div class="px-4 py-2 dark:border-gray-800 space-y-2">
-      <!-- 问题反馈 -->
-      <UTooltip :text="isCollapsed ? '问题反馈' : ''" :popper="{ placement: 'right' }">
+      <!-- 帮助和反馈 -->
+      <UTooltip :text="isCollapsed ? '帮助和反馈' : ''" :popper="{ placement: 'right' }">
         <UButton
           :block="!isCollapsed"
           class="transition-all rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-800 h-12 cursor-pointer"
@@ -297,12 +297,12 @@ function getContextMenuItems(session: AnalysisSession) {
             class="h-5 w-5 shrink-0"
             :class="[isCollapsed ? '' : 'mr-2']"
           />
-          <span v-if="!isCollapsed" class="truncate">更新和反馈</span>
+          <span v-if="!isCollapsed" class="truncate">帮助和反馈</span>
         </UButton>
       </UTooltip>
 
-      <!-- 设置和帮助 -->
-      <UTooltip :text="isCollapsed ? '设置和帮助' : ''" :popper="{ placement: 'right' }">
+      <!-- 设置 -->
+      <UTooltip :text="isCollapsed ? '设置' : ''" :popper="{ placement: 'right' }">
         <UButton
           :block="!isCollapsed"
           class="transition-all rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-800 h-12 cursor-pointer"
@@ -312,7 +312,7 @@ function getContextMenuItems(session: AnalysisSession) {
           @click="chatStore.showSettingModal = true"
         >
           <UIcon name="i-heroicons-cog-6-tooth" class="h-5 w-5 shrink-0" :class="[isCollapsed ? '' : 'mr-2']" />
-          <span v-if="!isCollapsed" class="truncate">设置和帮助</span>
+          <span v-if="!isCollapsed" class="truncate">设置</span>
         </UButton>
       </UTooltip>
 
