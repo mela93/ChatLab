@@ -14,12 +14,12 @@ const showTutorialModal = ref(false)
 
 const features = [
   {
-    icon: '⚡️',
-    title: '极致性能',
-    desc: '将聊天记录导入为本地数据库方案，千万级数据秒级索引，体验流畅',
-    color: 'text-yellow-500',
-    bg: 'bg-yellow-50',
-    delay: '0ms',
+    icon: '🔒',
+    title: '隐私至上',
+    desc: '聊天记录本地存储本地分析，保护你的隐私。',
+    color: 'text-green-500',
+    bg: 'bg-green-50',
+    delay: '200ms',
   },
   {
     icon: '📊',
@@ -28,14 +28,6 @@ const features = [
     color: 'text-blue-500',
     bg: 'bg-blue-50',
     delay: '100ms',
-  },
-  {
-    icon: '🔒',
-    title: '隐私至上',
-    desc: '聊天记录本地存储本地分析，保护你的隐私。',
-    color: 'text-green-500',
-    bg: 'bg-green-50',
-    delay: '200ms',
   },
   {
     icon: '🤖',
@@ -155,13 +147,23 @@ function getProgressDetail(): string {
               ChatLab
             </h1>
           </div>
-          <p class="text-xl font-medium text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            你的本地聊天分析实验室
-          </p>
+          <div class="mx-auto flex items-center justify-center">
+            <div class="relative">
+              <span
+                class="text-xl font-black italic tracking-wide text-gray-500 transition-transform duration-300 hover:scale-105 dark:text-gray-400"
+              >
+                你的本地 AI 聊天分析实验室
+              </span>
+              <UIcon
+                name="i-heroicons-sparkles"
+                class="absolute -right-6 -top-3 h-5 w-5 animate-bounce text-gray-400"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Feature Cards -->
-        <div class="xl:mb-16 mb-8 grid max-w-6xl grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 px-4">
+        <div class="xl:mb-16 mb-8 grid max-w-4xl grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 px-4">
           <div
             v-for="feature in features"
             :key="feature.title"
@@ -236,7 +238,7 @@ function getProgressDetail(): string {
                   <template v-else>
                     <!-- 默认状态 -->
                     <p class="text-lg font-semibold text-gray-900 dark:text-white">
-                      {{ isDragOver ? '松开鼠标导入文件' : '点击选择或拖拽文件到这里' }}
+                      {{ isDragOver ? '松开鼠标导入文件' : '点击选择或拖拽聊天记录导入' }}
                     </p>
                   </template>
                 </div>

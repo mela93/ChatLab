@@ -121,6 +121,10 @@ function getSessionRouteName(session: AnalysisSession): string {
 function isPrivateChat(session: AnalysisSession): boolean {
   return session.type === 'private'
 }
+
+function handleClickXhs() {
+  window.open('https://www.xiaohongshu.com/user/profile/6841741e000000001d0091b4', '_blank')
+}
 </script>
 
 <template>
@@ -294,22 +298,23 @@ function isPrivateChat(session: AnalysisSession): boolean {
     </UModal>
 
     <!-- Footer -->
-    <div class="px-4 py-2 dark:border-gray-800 space-y-2">
+    <div class="px-4 py-2 dark:border-gray-800 space-y-2 mb-4">
       <!-- 帮助和反馈 -->
-      <UTooltip :text="isCollapsed ? '帮助和反馈' : ''" :popper="{ placement: 'right' }">
+      <UTooltip :text="isCollapsed ? '关注更新' : ''" :popper="{ placement: 'right' }">
         <UButton
           :block="!isCollapsed"
           class="transition-all rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-800 h-12 cursor-pointer"
           :class="[isCollapsed ? 'flex w-12 items-center justify-center px-0' : 'justify-start pl-4']"
           color="gray"
           variant="ghost"
+          @click="handleClickXhs"
         >
           <UIcon
             name="i-heroicons-chat-bubble-left-right"
             class="h-5 w-5 shrink-0"
             :class="[isCollapsed ? '' : 'mr-2']"
           />
-          <span v-if="!isCollapsed" class="truncate">帮助和反馈</span>
+          <span v-if="!isCollapsed" class="truncate">关注更新</span>
         </UButton>
       </UTooltip>
 
