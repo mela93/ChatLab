@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import AIConfigTab from './settings/AIConfigTab.vue'
 import AIPromptConfigTab from './settings/AIPromptConfigTab.vue'
 import CacheManageTab from './settings/CacheManageTab.vue'
@@ -27,6 +27,10 @@ const activeTab = ref('settings')
 const aiConfigRef = ref<InstanceType<typeof AIConfigTab> | null>(null)
 const cacheManageRef = ref<InstanceType<typeof CacheManageTab> | null>(null)
 
+// 版本信息
+const appVersion = ref('加载中...')
+const isCheckingUpdate = ref(false)
+
 // AI 配置变更回调
 function handleAIConfigChanged() {
   emit('ai-config-saved')
@@ -35,6 +39,26 @@ function handleAIConfigChanged() {
 // 关闭弹窗
 function closeModal() {
   emit('update:open', false)
+}
+
+// 获取应用版本
+async function loadAppVersion() {
+  try {
+    appVersion.value = await window.api.app.getVersion()
+  } catch (error) {
+    console.error('获取版本号失败:', error)
+    appVersion.value = '未知'
+  }
+}
+
+// 检查更新
+function checkUpdate() {
+  isCheckingUpdate.value = true
+  window.api.app.checkUpdate()
+  // 3 秒后恢复按钮状态（实际检查结果由主进程 dialog 显示）
+  setTimeout(() => {
+    isCheckingUpdate.value = false
+  }, 3000)
 }
 
 // 监听打开状态
@@ -58,6 +82,11 @@ watch(
     }
   }
 )
+
+// 组件挂载时获取版本号
+onMounted(() => {
+  loadAppVersion()
+})
 </script>
 
 <template>
@@ -117,17 +146,30 @@ watch(
                 关于 ChatLab
               </h3>
               <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-pink-500 to-pink-600"
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-pink-500 to-pink-600"
+                    >
+                      <UIcon name="i-heroicons-chat-bubble-left-right" class="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900 dark:text-white">ChatLab</p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400">聊天记录分析工具</p>
+                      <p class="mt-1 text-xs text-gray-400">版本 {{ appVersion }}</p>
+                    </div>
+                  </div>
+                  <UButton
+                    :loading="isCheckingUpdate"
+                    :disabled="isCheckingUpdate"
+                    color="primary"
+                    variant="soft"
+                    size="sm"
+                    @click="checkUpdate"
                   >
-                    <UIcon name="i-heroicons-chat-bubble-left-right" class="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white">ChatLab</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">聊天记录分析工具</p>
-                    <p class="mt-1 text-xs text-gray-400">版本 0.1.0</p>
-                  </div>
+                    <UIcon name="i-heroicons-arrow-path" class="mr-1 h-4 w-4" />
+                    {{ isCheckingUpdate ? '检查中...' : '检查更新' }}
+                  </UButton>
                 </div>
               </div>
             </div>

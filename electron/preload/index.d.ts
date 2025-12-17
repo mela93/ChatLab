@@ -84,6 +84,11 @@ interface Api {
   clipboard: {
     copyImage: (dataUrl: string) => Promise<{ success: boolean; error?: string }>
   }
+  app: {
+    getVersion: () => Promise<string>
+    checkUpdate: () => void
+    simulateUpdate: () => void
+  }
 }
 
 interface MergeApi {

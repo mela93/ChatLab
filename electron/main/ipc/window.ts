@@ -6,6 +6,7 @@ import { ipcMain, app, dialog, clipboard, shell } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as fs from 'fs/promises'
 import type { IpcContext } from './types'
+import { simulateUpdateDialog } from '../update'
 
 /**
  * 注册窗口和文件系统操作 IPC 处理器
@@ -53,9 +54,21 @@ export function registerWindowHandlers(ctx: IpcContext): void {
     win.webContents.openDevTools()
   })
 
+  // ==================== 应用信息 ====================
+  ipcMain.handle('app:getVersion', () => {
+    return app.getVersion()
+  })
+
   // ==================== 更新检查 ====================
   ipcMain.on('check-update', () => {
     autoUpdater.checkForUpdates()
+  })
+
+  // 模拟更新弹窗（仅开发模式使用）
+  ipcMain.on('simulate-update', () => {
+    if (!app.isPackaged) {
+      simulateUpdateDialog(win)
+    }
   })
 
   // ==================== 通用工具 ====================

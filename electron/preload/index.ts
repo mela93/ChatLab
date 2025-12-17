@@ -34,6 +34,7 @@ const api = {
     const validChannels = [
       'show-message',
       'check-update',
+      'simulate-update',
       'get-gpu-acceleration',
       'set-gpu-acceleration',
       'save-gpu-acceleration',
@@ -958,7 +959,7 @@ const cacheApi = {
   },
 }
 
-// 扩展 api，添加 dialog 和 clipboard 功能
+// 扩展 api，添加 dialog、clipboard 和应用功能
 const extendedApi = {
   ...api,
   dialog: {
@@ -973,6 +974,26 @@ const extendedApi = {
      */
     copyImage: (dataUrl: string): Promise<{ success: boolean; error?: string }> => {
       return ipcRenderer.invoke('copyImage', dataUrl)
+    },
+  },
+  app: {
+    /**
+     * 获取应用版本号
+     */
+    getVersion: (): Promise<string> => {
+      return ipcRenderer.invoke('app:getVersion')
+    },
+    /**
+     * 检查更新
+     */
+    checkUpdate: (): void => {
+      ipcRenderer.send('check-update')
+    },
+    /**
+     * 模拟更新弹窗（仅开发模式）
+     */
+    simulateUpdate: (): void => {
+      ipcRenderer.send('simulate-update')
     },
   },
 }
