@@ -12,6 +12,7 @@ import shuakamiQqExporter from './shuakami-qq-exporter'
 import yccccccyEchotrace from './ycccccccy-echotrace'
 import wechatDefault from './wechat-default'
 import qqNativeTxt from './qq-native-txt'
+import whatsappNativeTxt from './whatsapp-native-txt'
 
 /**
  * 所有支持的格式模块（按优先级排序）
@@ -22,8 +23,17 @@ export const formats: FormatModule[] = [
   shuakamiQqExporter, // 优先级 10 - shuakami/qq-chat-exporter
   yccccccyEchotrace, // 优先级 15 - ycccccccy/echotrace 微信导出
   wechatDefault, // 优先级 20 - 微信数据库导出 JSON
+  whatsappNativeTxt, // 优先级 25 - WhatsApp 官方导出 TXT
   qqNativeTxt, // 优先级 30 - QQ 官方导出 TXT
 ]
 
 // 按名称导出，方便单独使用
-export { chatlab, chatlabJsonl, shuakamiQqExporter, yccccccyEchotrace, wechatDefault, qqNativeTxt }
+export {
+  chatlab,
+  chatlabJsonl,
+  shuakamiQqExporter,
+  yccccccyEchotrace,
+  wechatDefault,
+  qqNativeTxt,
+  whatsappNativeTxt,
+}

@@ -2,13 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import type { AnalysisSession, MessageType } from '@/types/base'
 import { getMessageTypeName } from '@/types/base'
-import type {
-  MemberActivity,
-  HourlyActivity,
-  DailyActivity,
-  WeekdayActivity,
-  MonthlyActivity,
-} from '@/types/analysis'
+import type { MemberActivity, HourlyActivity, DailyActivity, WeekdayActivity, MonthlyActivity } from '@/types/analysis'
 import { DoughnutChart } from '@/components/charts'
 import type { DoughnutChartData } from '@/components/charts'
 import { SectionCard } from '@/components/UI'
@@ -64,25 +58,28 @@ const typeChartData = computed<DoughnutChartData>(() => {
   }
 })
 
-// 双方消息对比数据
+// 双方消息对比数据（取消息数最多的两个成员）
 const memberComparisonData = computed(() => {
-  if (props.memberActivity.length !== 2) return null
+  // 私聊页面需要至少 2 个成员才能对比
+  if (props.memberActivity.length < 2) return null
 
+  // 按消息数排序，取前两名
   const sorted = [...props.memberActivity].sort((a, b) => b.messageCount - a.messageCount)
-  const total = sorted[0].messageCount + sorted[1].messageCount
+  const top2 = sorted.slice(0, 2)
+  const total = top2[0].messageCount + top2[1].messageCount
 
   return {
     member1: {
-      name: sorted[0].name,
-      avatar: sorted[0].avatar,
-      count: sorted[0].messageCount,
-      percentage: total > 0 ? Math.round((sorted[0].messageCount / total) * 100) : 0,
+      name: top2[0].name,
+      avatar: top2[0].avatar,
+      count: top2[0].messageCount,
+      percentage: total > 0 ? Math.round((top2[0].messageCount / total) * 100) : 0,
     },
     member2: {
-      name: sorted[1].name,
-      avatar: sorted[1].avatar,
-      count: sorted[1].messageCount,
-      percentage: total > 0 ? Math.round((sorted[1].messageCount / total) * 100) : 0,
+      name: top2[1].name,
+      avatar: top2[1].avatar,
+      count: top2[1].messageCount,
+      percentage: total > 0 ? Math.round((top2[1].messageCount / total) * 100) : 0,
     },
     total,
   }

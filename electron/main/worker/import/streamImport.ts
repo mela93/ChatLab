@@ -379,6 +379,7 @@ export async function streamImport(filePath: string, requestId: string): Promise
 
       onMeta: (meta: ParsedMeta) => {
         if (!metaInserted) {
+          logInfo(`写入 meta: name=${meta.name}, type=${meta.type}`)
           insertMeta.run(
             meta.name,
             meta.platform,

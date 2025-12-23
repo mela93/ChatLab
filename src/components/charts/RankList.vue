@@ -60,7 +60,7 @@ function getRelativePercentage(index: number): number {
 
       <!-- 名字 -->
       <div class="w-32 shrink-0">
-        <p class="truncate font-medium text-gray-900 dark:text-white">
+        <p class="wrap-break-word font-medium text-gray-900 dark:text-white">
           {{ member.name }}
         </p>
       </div>
@@ -77,7 +77,7 @@ function getRelativePercentage(index: number): number {
       </div>
 
       <!-- 数值和百分比 -->
-      <div class="flex shrink-0 items-baseline gap-2">
+      <div class="flex shrink-0 items-baseline gap-2 whitespace-nowrap">
         <span class="text-lg font-bold text-gray-900 dark:text-white">{{ member.value }}</span>
         <span class="text-sm text-gray-500">{{ unit }} ({{ member.percentage }}%)</span>
       </div>
