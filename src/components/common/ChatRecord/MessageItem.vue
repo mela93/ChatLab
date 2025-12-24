@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
  * 单条消息展示组件 - 气泡样式
+ * 支持 Owner 消息显示在右侧（类似聊天界面）
  */
 import { computed, ref, nextTick } from 'vue'
 import dayjs from 'dayjs'
@@ -19,6 +20,13 @@ const props = defineProps<{
 }>()
 
 const sessionStore = useSessionStore()
+
+// 判断当前消息是否是 Owner 发送的
+const isOwner = computed(() => {
+  const ownerId = sessionStore.currentSession?.ownerId
+  if (!ownerId) return false
+  return props.message.senderPlatformId === ownerId
+})
 
 // 上下文相关状态
 const showContextPopover = ref(false)
@@ -120,8 +128,10 @@ const currentColor = computed(() => colorPalette[colorIndex.value])
 const avatarColor = computed(() => currentColor.value.avatar)
 const nameColor = computed(() => currentColor.value.name)
 
-// 统一的气泡颜色
-const bubbleColor = 'bg-gray-100 dark:bg-gray-800'
+// 气泡颜色（Owner 使用绿色，其他人使用灰色）
+const bubbleColor = computed(() =>
+  isOwner.value ? 'bg-green-100 dark:bg-green-900/40' : 'bg-gray-100 dark:bg-gray-800'
+)
 
 // 显示名称（包含别名）
 const displayName = computed(() => {
@@ -198,7 +208,8 @@ function highlightContent(content: string): string {
       'bg-yellow-50/50 dark:bg-yellow-900/10': isTarget,
     }"
   >
-    <div class="flex gap-3">
+    <!-- Owner 消息显示在右侧 -->
+    <div class="flex gap-3" :class="isOwner ? 'flex-row-reverse' : ''">
       <!-- 头像 -->
       <div
         class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-medium text-white overflow-hidden"
@@ -214,9 +225,9 @@ function highlightContent(content: string): string {
       </div>
 
       <!-- 消息内容区 -->
-      <div class="min-w-0 flex-1">
+      <div class="min-w-0 flex-1" :class="isOwner ? 'flex flex-col items-end' : ''">
         <!-- 发送者和时间 -->
-        <div class="mb-1 flex items-center gap-2">
+        <div class="mb-1 flex items-center gap-2" :class="isOwner ? 'flex-row-reverse' : ''">
           <span class="text-sm font-medium" :class="nameColor">
             {{ displayName }}
           </span>
@@ -230,13 +241,11 @@ function highlightContent(content: string): string {
         </div>
 
         <!-- 气泡和上下文按钮 -->
-        <div class="flex items-start gap-1">
+        <!-- max-w-[calc(100%-48px)] = 100% - 头像宽度(36px) - gap(12px) -->
+        <div class="flex items-start gap-1 max-w-[calc(100%-68px)]" :class="isOwner ? 'flex-row-reverse' : ''">
           <div
-            class="relative inline-block max-w-full rounded-lg px-3 py-2 transition-shadow"
-            :class="[
-              bubbleColor,
-              isTarget ? 'ring-2 ring-yellow-400 dark:ring-yellow-500' : '',
-            ]"
+            class="relative inline-block rounded-lg px-3 py-2 transition-shadow"
+            :class="[bubbleColor, isTarget ? 'ring-2 ring-yellow-400 dark:ring-yellow-500' : '']"
           >
             <p
               class="whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-200"
@@ -248,7 +257,7 @@ function highlightContent(content: string): string {
           <UPopover
             v-if="isFiltered"
             :open="showContextPopover"
-            :popper="{ placement: 'right-start' }"
+            :popper="{ placement: isOwner ? 'left-start' : 'right-start' }"
             @update:open="handlePopoverClose"
           >
             <button
@@ -302,4 +311,3 @@ function highlightContent(content: string): string {
     </div>
   </div>
 </template>
-

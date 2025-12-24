@@ -377,6 +377,7 @@ export function getAllSessions(): any[] {
           dbPath,
           groupId: meta.group_id || null,
           groupAvatar: meta.group_avatar || null,
+          ownerId: meta.owner_id || null,
         })
       }
 
@@ -431,6 +432,7 @@ export function getSession(sessionId: string): any | null {
     dbPath: getDbPath(sessionId),
     groupId: meta.group_id || null,
     groupAvatar: meta.group_avatar || null,
+    ownerId: meta.owner_id || null,
   }
 }
 
