@@ -4,6 +4,18 @@ import { platform } from '@electron-toolkit/utils'
 import { logger } from './logger'
 import { getActiveProxyUrl } from './network/proxy'
 
+// R2 镜像源 URL（用于中国大陆用户）
+const R2_MIRROR_URL = 'https://chatlab.1app.top/releases/download'
+
+// 更新源类型
+type UpdateSource = 'github' | 'r2'
+
+// 当前使用的更新源
+let currentSource: UpdateSource = 'github'
+
+// 是否已尝试过备用源
+let hasTriedFallback = false
+
 /**
  * 配置自动更新的代理设置
  * electron-updater 通过环境变量读取代理配置
@@ -21,6 +33,53 @@ function configureUpdateProxy(): void {
     delete process.env.HTTPS_PROXY
     delete process.env.HTTP_PROXY
   }
+}
+
+/**
+ * 切换到 R2 镜像源
+ */
+function switchToR2Mirror(): void {
+  currentSource = 'r2'
+  autoUpdater.setFeedURL({
+    provider: 'generic',
+    url: R2_MIRROR_URL,
+  })
+  logger.info(`[Update] 已切换到 R2 镜像源: ${R2_MIRROR_URL}`)
+}
+
+/**
+ * 重置为 GitHub 源（下次检查时使用）
+ */
+function resetToGitHubSource(): void {
+  currentSource = 'github'
+  hasTriedFallback = false
+  // electron-updater 默认使用 electron-builder.yml 中的配置（GitHub）
+  // 无需显式设置，只需要不调用 setFeedURL 即可
+}
+
+/**
+ * 判断错误是否为网络相关错误
+ */
+function isNetworkError(error: Error): boolean {
+  const networkErrorKeywords = [
+    'ECONNREFUSED',
+    'ENOTFOUND',
+    'ETIMEDOUT',
+    'ECONNRESET',
+    'ENETUNREACH',
+    'EAI_AGAIN',
+    'socket hang up',
+    'network',
+    'connect',
+    'timeout',
+    'getaddrinfo',
+  ]
+  const errorMessage = error.message?.toLowerCase() || ''
+  const errorCode = (error as NodeJS.ErrnoException).code?.toLowerCase() || ''
+
+  return networkErrorKeywords.some(
+    (keyword) => errorMessage.includes(keyword.toLowerCase()) || errorCode.includes(keyword.toLowerCase())
+  )
 }
 
 /**
@@ -170,15 +229,30 @@ const checkUpdate = (win) => {
     }
   })
 
-  // 错误处理（静默处理，记录到日志）
+  // 错误处理（智能切换备用源）
   autoUpdater.on('error', (err) => {
-    // 更新错误记录到日志，不显示给用户
-    logger.error(`[Update] 更新错误: ${err.message || err}`)
+    logger.error(`[Update] 更新错误 (${currentSource}): ${err.message || err}`)
+
+    // 如果是 GitHub 源且为网络错误，尝试切换到 R2 备用源
+    if (currentSource === 'github' && !hasTriedFallback && isNetworkError(err)) {
+      hasTriedFallback = true
+      logger.info('[Update] GitHub 源访问失败，尝试切换到 R2 镜像源...')
+
+      switchToR2Mirror()
+
+      // 延迟 1 秒后重试检查更新
+      setTimeout(() => {
+        autoUpdater.checkForUpdates().catch((retryErr) => {
+          logger.error(`[Update] R2 镜像源检查更新也失败: ${retryErr}`)
+        })
+      }, 1000)
+    }
   })
 
   // 等待 3 秒再检查更新，确保窗口准备完成，用户进入系统
   setTimeout(() => {
     isManualCheck = false // 自动检查
+    resetToGitHubSource() // 重置为 GitHub 源
     autoUpdater.checkForUpdates().catch((err) => {
       console.log('[Update] 检查更新失败:', err)
     })
@@ -195,6 +269,7 @@ const manualCheckForUpdates = () => {
 
   isManualCheck = true // 手动检查
   isFirstShow = false // 手动检查时，无论结果都显示提示
+  resetToGitHubSource() // 重置为 GitHub 源
 
   autoUpdater.checkForUpdates().catch((err) => {
     console.log('[Update] 手动检查更新失败:', err)

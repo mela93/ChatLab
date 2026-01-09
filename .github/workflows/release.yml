@@ -234,3 +234,23 @@ jobs:
             dist/*.blockmap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 同步到 Cloudflare R2（国内镜像）
+      - name: Get version for R2 upload
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "tag=v${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload to Cloudflare R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          source-dir: dist
+          destination-dir: releases/download/${{ steps.version.outputs.tag }}
