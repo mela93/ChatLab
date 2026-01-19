@@ -3,7 +3,7 @@
  * 聊天记录查看器 Drawer
  * 主组件，组合筛选面板、消息列表、会话时间线等子组件
  */
-import { ref, watch, toRaw, nextTick } from 'vue'
+import { ref, watch, toRaw, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import FilterPanel from './FilterPanel.vue'
 import MessageList from './MessageList.vue'
@@ -17,6 +17,13 @@ const { t } = useI18n()
 const layoutStore = useLayoutStore()
 const sessionStore = useSessionStore()
 const { currentSessionId } = storeToRefs(sessionStore)
+
+// 平台检测
+const isWindows = ref(false)
+
+onMounted(() => {
+  isWindows.value = navigator.platform.toLowerCase().includes('win')
+})
 
 // 消息列表组件引用
 const messageListRef = ref<InstanceType<typeof MessageList> | null>(null)
@@ -147,7 +154,10 @@ watch(
     <template #content>
       <div class="flex h-full w-[680px] flex-col bg-white dark:bg-gray-900" style="-webkit-app-region: no-drag">
         <!-- 头部 -->
-        <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+        <div
+          class="flex items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800"
+          :class="isWindows ? 'pt-10 pb-3' : 'py-3'"
+        >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ t('title') }}</h3>
           <UButton
             icon="i-heroicons-x-mark"
