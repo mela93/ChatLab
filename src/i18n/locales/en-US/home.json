@@ -101,7 +101,8 @@
     "types": {
       "feat": "Features",
       "fix": "Bug Fixes",
-      "chore": "Other"
+      "chore": "Other",
+      "style": "Style"
     }
   }
 }

@@ -3,6 +3,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
+import { sanitizeSummary } from '@/utils/sanitizeSummary'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
@@ -27,10 +28,24 @@ const CHANGELOG_READ_KEY = 'chatlab_changelog_read_version'
 // 用户协议同意标记的 localStorage key
 const AGREEMENT_KEY = 'chatlab_agreement_version'
 
+// summary 的白名单配置（可按需扩展）
+const SUMMARY_SANITIZE_OPTIONS = {
+  allowedTags: ['br', 'a', 'img'],
+  allowedAttrs: {
+    a: ['href', 'target', 'rel'],
+    img: ['src', 'alt', 'title', 'width', 'height'],
+  },
+}
+
 // 切换版本展开/收起
 function toggleVersion(version: string, index: number) {
   const currentState = isExpanded(version, index)
   expandedState.value.set(version, !currentState)
+}
+
+// 版本号统一格式，避免 v 前缀造成匹配失败
+function normalizeVersion(version?: string | null) {
+  return version ? version.trim().replace(/^v/i, '') : null
 }
 
 // 判断版本是否展开
@@ -41,7 +56,7 @@ function isExpanded(version: string, index: number) {
   }
   // 如果设置了当前软件版本，则当前版本默认展开
   if (currentAppVersion.value) {
-    return version === currentAppVersion.value
+    return isCurrentVersion(version)
   }
   // 否则，第一个版本默认展开，其他默认收起
   return index === 0
@@ -49,7 +64,8 @@ function isExpanded(version: string, index: number) {
 
 // 判断是否是当前软件版本
 function isCurrentVersion(version: string) {
-  return currentAppVersion.value && version === currentAppVersion.value
+  const current = normalizeVersion(currentAppVersion.value)
+  return current ? normalizeVersion(version) === current : false
 }
 
 // Changelog 数据结构
@@ -58,7 +74,7 @@ interface ChangelogItem {
   date: string
   summary: string
   changes: {
-    type: 'feat' | 'fix' | 'chore'
+    type: 'feat' | 'fix' | 'chore' | 'style'
     items: string[]
   }[]
 }
@@ -115,6 +131,11 @@ const changeTypeConfig = {
     color: 'text-gray-500',
     bgColor: 'bg-gray-100 dark:bg-gray-700/30',
   },
+  style: {
+    icon: 'i-heroicons-paint-brush',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+  },
 }
 
 // 获取变更类型显示名称
@@ -123,6 +144,7 @@ function getChangeTypeLabel(type: string) {
     feat: t('home.changelog.types.feat'),
     fix: t('home.changelog.types.fix'),
     chore: t('home.changelog.types.chore'),
+    style: t('home.changelog.types.style'),
   }
   return labels[type] || type
 }
@@ -155,11 +177,12 @@ async function checkNewVersion() {
     }
 
     // 1. 获取当前软件版本号
-    const currentVersion = await window.api.app.getVersion()
+    const rawVersion = await window.api.app.getVersion()
+    const currentVersion = normalizeVersion(rawVersion)
     if (!currentVersion) return
 
     // 2. 获取 localStorage 中存储的已读版本号
-    const readVersion = localStorage.getItem(CHANGELOG_READ_KEY)
+    const readVersion = normalizeVersion(localStorage.getItem(CHANGELOG_READ_KEY))
 
     // 3. 如果 readVersion 不为空且等于 currentVersion，说明用户已看过，不需要请求数据
     if (readVersion && readVersion === currentVersion) {
@@ -175,7 +198,7 @@ async function checkNewVersion() {
     if (!latestChangelogVersion) return
 
     // 5. 在 changelog 中查找当前软件版本
-    const currentVersionExists = data.some((log) => log.version === currentVersion)
+    const currentVersionExists = data.some((log) => normalizeVersion(log.version) === currentVersion)
 
     // 如果在 changelog 中找不到当前版本，说明日志还没更新到当前版本，不显示弹窗
     if (!currentVersionExists) {
@@ -198,8 +221,14 @@ async function checkNewVersion() {
 // 暴露方法给父组件
 
 // 手动打开弹窗（用户点击时调用），会自动获取数据
-function open() {
-  currentAppVersion.value = null // 手动打开时不设置当前版本，使用默认展开逻辑
+async function open() {
+  // 手动打开也标记当前版本，避免标签缺失
+  try {
+    currentAppVersion.value = normalizeVersion(await window.api.app.getVersion())
+  } catch {
+    currentAppVersion.value = null
+  }
+  expandedState.value.clear()
   showModal.value = true
   // 打开时获取数据（如果还没有数据）
   if (changelogs.value.length === 0) {
@@ -274,11 +303,7 @@ defineExpose({ open, openWithData, close, fetchChangelogs, getLatestVersion })
 
           <!-- Changelog List -->
           <div v-else class="space-y-6">
-            <div
-              v-for="(log, index) in changelogs"
-              :key="log.version"
-              class="relative"
-            >
+            <div v-for="(log, index) in changelogs" :key="log.version" class="relative">
               <!-- Timeline line -->
               <div
                 v-if="index < changelogs.length - 1"
@@ -302,14 +327,9 @@ defineExpose({ open, openWithData, close, fetchChangelogs, getLatestVersion })
                 <!-- Version info -->
                 <div class="flex-1 pt-0.5">
                   <!-- Clickable header -->
-                  <div
-                    class="cursor-pointer select-none"
-                    @click="toggleVersion(log.version, index)"
-                  >
+                  <div class="cursor-pointer select-none" @click="toggleVersion(log.version, index)">
                     <div class="flex items-center gap-3">
-                      <h3 class="text-base font-bold text-gray-900 dark:text-white">
-                        v{{ log.version }}
-                      </h3>
+                      <h3 class="text-base font-bold text-gray-900 dark:text-white">v{{ log.version }}</h3>
                       <span
                         v-if="index === 0"
                         class="rounded-full bg-pink-100 px-2 py-0.5 text-xs font-medium text-pink-600 dark:bg-pink-900/30 dark:text-pink-400"
@@ -333,16 +353,14 @@ defineExpose({ open, openWithData, close, fetchChangelogs, getLatestVersion })
                     <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                       {{ formatDate(log.date) }}
                     </p>
-                    <p class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {{ log.summary }}
-                    </p>
+                    <p
+                      class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                      v-html="sanitizeSummary(log.summary, SUMMARY_SANITIZE_OPTIONS)"
+                    />
                   </div>
 
                   <!-- Changes (collapsible) -->
-                  <div
-                    v-show="isExpanded(log.version, index)"
-                    class="mt-3 space-y-3"
-                  >
+                  <div v-show="isExpanded(log.version, index)" class="mt-3 space-y-3">
                     <div
                       v-for="change in log.changes"
                       :key="change.type"
@@ -371,9 +389,7 @@ defineExpose({ open, openWithData, close, fetchChangelogs, getLatestVersion })
                           :key="idx"
                           class="relative text-sm text-gray-600 dark:text-gray-400"
                         >
-                          <span
-                            class="absolute -left-4 top-2 h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600"
-                          />
+                          <span class="absolute -left-4 top-2 h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600" />
                           {{ item }}
                         </li>
                       </ul>
